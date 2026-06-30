@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Department } from '../utils/mockData';
 import { groqChat, SYSTEM_PROMPTS } from '../utils/groqClient';
 import { 
-  Lock, Users, RefreshCw, BarChart2, ShieldCheck, Siren, LogOut, Activity,
+  Lock, RefreshCw, BarChart2, Siren, LogOut, Activity,
   Loader, FileText, Zap, Clock, BrainCircuit, AlertTriangle, CheckCircle2,
   Radio, TrendingUp, AlertCircle
 } from 'lucide-react';
