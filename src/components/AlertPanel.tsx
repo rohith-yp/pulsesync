@@ -57,6 +57,13 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({ alerts: externalAlerts, 
     window.dispatchEvent(new CustomEvent('add-dashboard-notification', { detail: message }));
   };
 
+  // Dispatch full alert context to map → triggers AI Simulation Report generation
+  const dispatchAiReport = (actionName: string, context: string) => {
+    window.dispatchEvent(new CustomEvent('alert-ai-report', {
+      detail: { actionName, context }
+    }));
+  };
+
   // Resolve alert: animate out → pop in new one
   const resolveAlert = (alertId: string, mode: 'deploy' | 'dismiss') => {
     const alert = activeAlerts.find(a => a.id === alertId);
@@ -64,11 +71,19 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({ alerts: externalAlerts, 
 
     setJustResolvedId(alertId);
 
-    dispatchMapEvent(
-      mode === 'deploy'
-        ? `✅ ALERT RESOLVED: Operational plan deployed for "${alert.departmentName}" — ${alert.message.slice(0, 60)}...`
-        : `🗑️ ALERT DISMISSED: "${alert.departmentName}" alert cleared by operator`
-    );
+    const resolveMsg = mode === 'deploy'
+      ? `✅ ALERT RESOLVED: Operational plan deployed for "${alert.departmentName}" — ${alert.message.slice(0, 60)}...`
+      : `🗑️ ALERT DISMISSED: "${alert.departmentName}" alert cleared by operator`;
+
+    dispatchMapEvent(resolveMsg);
+
+    // Fire AI report for resolve/deploy action
+    if (mode === 'deploy') {
+      dispatchAiReport(
+        `Deploy Operational Plan — ${alert.departmentName}`,
+        `Alert: "${alert.message}". All ${alert.recommendedActions.length} recommended actions have been executed: ${alert.recommendedActions.join(' | ')}. Expected wait time reduction: ${alert.expectedReduction}.`
+      );
+    }
 
     if (onDismissAlert) onDismissAlert(alertId);
 
@@ -375,6 +390,14 @@ export const AlertPanel: React.FC<AlertPanelProps> = ({ alerts: externalAlerts, 
                                     handleActionToggle(alert.id, actionIdx);
                                     if (!isChecked) {
                                       dispatchMapEvent(`☑️ ALERT TASK: "${action.slice(0, 60)}" marked complete in ${alert.departmentName}`);
+                                      // Fire AI Simulation Report for this task
+                                      dispatchAiReport(
+                                        `Task Completed: ${action.slice(0, 55)}`,
+                                        `Alert context: "${alert.message}" in ${alert.departmentName} (${alert.time}). ` +
+                                        `Task just executed: "${action}". ` +
+                                        `${finishedActions + 1}/${totalActions} actions completed. ` +
+                                        `Expected wait time reduction: ${alert.expectedReduction}.`
+                                      );
                                     }
                                   }}
                                 >

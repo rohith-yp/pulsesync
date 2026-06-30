@@ -178,6 +178,54 @@ export const LiveHospitalMap = ({ departments, userRole }: LiveHospitalMapProps)
     return () => window.removeEventListener('alert-panel-action', handler);
   }, []);
 
+  // Listen for AI Alert Panel report requests and generate a full AI Simulation Report
+  useEffect(() => {
+    const handler = async (e: Event) => {
+      const { actionName, context } = (e as CustomEvent<{ actionName: string; context: string }>).detail;
+      if (!actionName || !context) return;
+
+      // Add pending entry to event log
+      const now = new Date();
+      const timestamp = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      setSimulationEvents(prev => [...prev.slice(-29), {
+        id: `alert-rpt-${Date.now()}`,
+        timestamp,
+        action: `🤖 Generating AI Simulation Report for: ${actionName}`,
+        status: 'pending' as const,
+        severity: 'warning' as const
+      }]);
+
+      // Show loading state in report panel
+      setAiLoading(true);
+
+      // Call Groq to generate the report
+      const reportContent = await generateAiReport(actionName, context);
+      const reportId = `alert-report-${Date.now()}`;
+
+      setAiReports(prev => [{
+        id: reportId,
+        action: `🔔 Alert: ${actionName}`,
+        timestamp: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+        content: reportContent,
+        status: 'success'
+      }, ...prev.slice(0, 9)]);
+      setActiveReportId(reportId);
+      setAiLoading(false);
+
+      // Add success entry to event log
+      setSimulationEvents(prev => [...prev.slice(-29), {
+        id: `alert-rpt-done-${Date.now()}`,
+        timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+        action: `✅ AI Simulation Report ready for: ${actionName}`,
+        status: 'success' as const,
+        severity: 'info' as const
+      }]);
+    };
+    window.addEventListener('alert-ai-report', handler);
+    return () => window.removeEventListener('alert-ai-report', handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   // Telemetry
   const [telemetry, setTelemetry] = useState({
