@@ -147,7 +147,7 @@ export const Dashboard = ({ userRole, onLogout }: DashboardProps) => {
                 📈 Department Head Access: Displaying Surge and Bottleneck analysis localized to **Emergency** operations.
               </div>
             )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
               <InflowPrediction />
               <BottleneckPrediction bottlenecks={filteredBottlenecks} />
             </div>

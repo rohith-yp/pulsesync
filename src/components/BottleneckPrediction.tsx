@@ -50,17 +50,17 @@ export const BottleneckPrediction = ({ bottlenecks }: BottleneckPredictionProps)
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>Departmental Bottleneck & Delay Forecast</h2>
       </div>
 
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem', textAlign: 'left' }}>
+      <div className="table-container" style={{ border: '1px solid var(--neutral-200)', borderRadius: '12px', overflow: 'hidden', backgroundColor: '#FFFFFF' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
           <thead>
-            <tr style={{ borderBottom: '2px solid var(--neutral-200)', color: 'var(--neutral-500)', fontWeight: 600 }}>
-              <th style={{ padding: '12px 8px' }}>Department</th>
-              <th style={{ padding: '12px 8px' }}>Active Capacity</th>
-              <th style={{ padding: '12px 8px' }}>Projected Census (45m)</th>
-              <th style={{ padding: '12px 8px' }}>Current Wait Time</th>
-              <th style={{ padding: '12px 8px' }}>Predicted Wait Time</th>
-              <th style={{ padding: '12px 8px' }}>Overload Risk</th>
-              <th style={{ padding: '12px 8px' }}>AI Tactical Mitigations</th>
+            <tr style={{ backgroundColor: 'var(--neutral-50)', borderBottom: '2px solid var(--neutral-200)', color: 'var(--neutral-600)', fontWeight: 700 }}>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Department</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Capacity</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Projected Census (45m)</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Current Wait Time</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Predicted Wait Time</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Overload Risk</th>
+              <th style={{ padding: '14px 16px', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>AI Tactical Mitigations</th>
             </tr>
           </thead>
           <tbody>
@@ -74,21 +74,21 @@ export const BottleneckPrediction = ({ bottlenecks }: BottleneckPredictionProps)
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--neutral-50)'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
-                <td style={{ padding: '16px 8px', fontWeight: 700, color: 'var(--neutral-900)' }}>
+                <td style={{ padding: '16px', fontWeight: 700, color: 'var(--neutral-900)' }}>
                   {b.department}
                 </td>
-                <td style={{ padding: '16px 8px', color: 'var(--neutral-650)' }}>
+                <td style={{ padding: '16px', color: 'var(--neutral-600)' }}>
                   {b.currentCapacity} beds
                 </td>
-                <td style={{ padding: '16px 8px', fontWeight: 600 }}>
+                <td style={{ padding: '16px', fontWeight: 600 }}>
                   <span style={{ color: b.futureCapacity > b.currentCapacity ? 'var(--danger)' : 'var(--neutral-800)' }}>
                     {b.futureCapacity} beds
                   </span>
                 </td>
-                <td style={{ padding: '16px 8px', color: 'var(--neutral-600)' }}>
+                <td style={{ padding: '16px', color: 'var(--neutral-600)' }}>
                   {b.currentWaitingTime} mins
                 </td>
-                <td style={{ padding: '16px 8px', fontWeight: 700, color: b.predictedWaitingTime > b.currentWaitingTime ? 'var(--danger)' : 'var(--success)' }}>
+                <td style={{ padding: '16px', fontWeight: 700, color: b.predictedWaitingTime > b.currentWaitingTime ? 'var(--danger)' : 'var(--success)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {b.predictedWaitingTime} mins
                     {b.predictedWaitingTime > b.currentWaitingTime && (
@@ -98,10 +98,10 @@ export const BottleneckPrediction = ({ bottlenecks }: BottleneckPredictionProps)
                     )}
                   </div>
                 </td>
-                <td style={{ padding: '16px 8px' }}>
+                <td style={{ padding: '16px' }}>
                   {getRiskBadge(b.riskScore)}
                 </td>
-                <td style={{ padding: '16px 8px' }}>
+                <td style={{ padding: '16px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     {b.aiSuggestions.map((sug, sIdx) => (
                       <span 
